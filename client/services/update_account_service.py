@@ -1,6 +1,6 @@
 from typing import Type
-from lib.Console import Console
-from lib.Client import Client
+from utils.Console import Console
+from utils.Client import Client
 
 def update_account(
     console: Type[Console],

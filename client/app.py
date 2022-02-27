@@ -1,7 +1,7 @@
 import textwrap
 import sys
-from lib.Console import Console
-from lib.Client import Client
+from utils.Console import Console
+from utils.Client import Client
 from services.open_account_service import open_account
 from services.close_account_service import close_account
 from services.update_account_service import update_account
