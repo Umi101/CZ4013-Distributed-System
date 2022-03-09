@@ -1,20 +1,11 @@
 import socket
 
 class Client():
-    def __init__(self,port,address,server_port,server_address):
-        self.port = port
-        self.address = address
+    def __init__(self,server_port,server_address):
         self.server_port = server_port
         self.server_address = server_address
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.message_id = 0
-
-
-    def get_port(self):
-        return self.port
-
-    def get_address(self):
-        return self.address
     
     def get_server_address(self):
         return self.server_address

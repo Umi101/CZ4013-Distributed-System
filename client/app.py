@@ -10,7 +10,7 @@ from services.monitor_accounts_service import monitor_account
 def main():
 
     # Client Configuration
-    client = Client(2223,'127.0.0.1',2222,'127.0.0.1')
+    client = Client(2222,'127.0.0.1')
   
 
     menu = '''
