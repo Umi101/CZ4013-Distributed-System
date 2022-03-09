@@ -6,9 +6,9 @@ class Client():
         self.address = address
         self.server_port = server_port
         self.server_address = server_address
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.connect((self.server_address, self.server_port))
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.message_id = 0
+
 
     def get_port(self):
         return self.port
@@ -28,7 +28,7 @@ class Client():
         return tmp
 
     def send(self,byte_data):
-        self.socket.sendall(byte_data)
+        self.socket.sendto(byte_data,(self.server_address, self.server_port))
 
     def receive(self):
         data = self.socket.recv(2048)
