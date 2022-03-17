@@ -16,24 +16,24 @@ def update_account(
     while len(str(password)) != 4:
         password = console.prompt_int('Enter your 4 digit pin number : ')
     amount = console.prompt_float('Enter amount : ', minimum = 0.01, maximum = float('inf'))
-    if next_choice == 1:
-        amount = -amount
+    # if next_choice == 1:
+    #     amount = -amount
     
     # Construct byte array
     builder = DataBuilder()
-    builder.set_int('service_id',service_id).\
-        set_int('message_id',message_id).\
+    builder.set_two_byte('service_id',service_id).\
+        set_two_byte('message_id',message_id).\
+        set_int('withdraw_choice',next_choice).\
         set_string('name',name).\
         set_int('password',password).\
         set_float('amount',amount)
 
     print(builder.buffer)
+    print(builder.create())
 
     # Send data
-    client.send(b'Sample mock data')
+    client.send(builder.create())
 
     # Receive response
     response = client.receive()
-    print(response)
-    
-
+    print(response.decode('ascii'))

@@ -19,20 +19,21 @@ def open_account(
 
     # Construct byte array
     builder = DataBuilder()
-    builder.set_int('service_id',service_id).\
-        set_int('message_id',message_id).\
+    builder.set_two_byte('service_id',service_id).\
+        set_two_byte('message_id',message_id).\
         set_string('name',name).\
         set_int('password',password).\
         set_string('currency',currency).\
         set_float('balance',balance)
 
     print(builder.buffer)
+    print(builder.create())
 
     # Send data
-    client.send(b'Sample mock data')
+    client.send(builder.create())
 
     # Receive response
     response = client.receive()
-    print(response)
+    print(response.decode('ascii'))
     
 
