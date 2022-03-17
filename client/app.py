@@ -10,7 +10,11 @@ from services.monitor_accounts_service import monitor_account
 def main():
 
     # Client Configuration
-    client = Client(2222,'127.0.0.1')
+    port = 2222
+    host = '127.0.0.1'
+    # port = console.prompt_int("Enter client's port number : ")
+    # host = console.prompt_string('Enter client address : ')
+    client = Client(port,host)
   
 
     menu = '''

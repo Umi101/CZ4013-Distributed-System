@@ -35,4 +35,5 @@ public class DataProcessing {
 		Double byteDouble = ByteBuffer.wrap(data).getDouble();
 		return byteDouble;
 	}
+	
 }

@@ -2,14 +2,16 @@ package main;
 
 import utils.Socket;
 
-import java.awt.*;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.util.Arrays;
+import service.OpenAccountService;
+import service.CloseAccountService;
+import service.UpdateAccountService;
 
 public class Server {
-    protected Socket designatedSocket;
+    public Socket designatedSocket;
     protected int portNumber;
     protected String ipAddress;
     protected byte[] buffer;
@@ -22,17 +24,47 @@ public class Server {
     }
 
     public void start() {
+    	
+    	
         while (true) {
             try {
                 portNumber = designatedSocket.getSocket().getLocalPort();
                 ipAddress = designatedSocket.getSocket().getLocalAddress().getHostAddress();
                 System.out.printf("Server active. Port: %d, IP: %s.%n", portNumber, ipAddress);
                 DatagramPacket p = receive();
+                
                 InetAddress clientAddress = p.getAddress();
                 int clientPortNumber = p.getPort();
+                
+                
+				int serviceRequested = p.getData()[1];
+				
+				System.out.println("The service requested is");
+				System.out.println(serviceRequested);
+
+				byte[] data = p.getData();
+				
+				
+				switch(serviceRequested) {
+				case 1:
+			  		OpenAccountService s1 = new OpenAccountService();
+			  		s1.handleService(data,this,clientAddress,clientPortNumber);
+					break;
+				case 2:
+			  		CloseAccountService s2 = new CloseAccountService();
+			  		s2.handleService(data,this,clientAddress,clientPortNumber);
+					break;
+				case 3:
+					UpdateAccountService s3 = new UpdateAccountService();
+					s3.handleService(data, this, clientAddress, clientPortNumber);
+				default:
+					break;
+				}
+								
+				
                 System.out.println(p);
 
-            } catch (IOException e) {
+            } catch (IOException e) {	
                 e.printStackTrace();
 
             } catch (NullPointerException e) {

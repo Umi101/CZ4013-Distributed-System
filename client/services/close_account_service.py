@@ -18,16 +18,17 @@ def close_account(
 
     # Constuct byte array
     builder = DataBuilder()
-    builder.set_int('service_id',service_id).\
-        set_int('message_id',message_id).\
+    builder.set_two_byte('service_id',service_id).\
+        set_two_byte('message_id',message_id).\
         set_string('name',name).\
         set_int('acc_no',acc_no).\
         set_int('password',password)
 
     print(builder.buffer)
-
+    print(builder.create())
+    
     # Send data
-    client.send(b'Sample mock data')
+    client.send(builder.create())
 
     # Receive response
     response = client.receive()
