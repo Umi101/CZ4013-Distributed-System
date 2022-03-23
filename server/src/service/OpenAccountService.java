@@ -45,8 +45,7 @@ public class OpenAccountService {
 		}
 		else
 		{
-			String s = new String();
-			s.format("The account id is: %d%n",flag);
+			String s = String.format("The account id is: %d%n",flag);
 			byte[] buffer = new byte[s.length()];
 			int index = 0;
 			for(byte b: s.getBytes()){
