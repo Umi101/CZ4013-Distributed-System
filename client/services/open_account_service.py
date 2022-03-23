@@ -16,7 +16,8 @@ def open_account(
         password = console.prompt_int('Enter your 4 digit pin number : ')
     currency = console.prompt_string('Enter your currency : ')
     balance = console.prompt_float('Enter your initial balance : ')
-
+    while balance < 0:
+        balance = console.prompt_float('Enter your initial balance : ')
     # Construct byte array
     builder = DataBuilder()
     builder.set_two_byte('service_id',service_id).\

@@ -8,7 +8,6 @@ import main.Server;
 public class OpenAccountService {
 	
 	public void handleService(byte [] data, Server server,InetAddress clientAddress,int clientPortNumber) {
-		
 		HashMap <String, Object> resultsMap = new DataUnpacker.DataPackage()
 				.setType("service_id",DataUnpacker.TYPE.INTEGER)
 				.setType("message_id",DataUnpacker.TYPE.INTEGER)
@@ -16,7 +15,7 @@ public class OpenAccountService {
 		 		.setType("password",DataUnpacker.TYPE.INTEGER)
 		 		.setType("currency",DataUnpacker.TYPE.STRING)
 		 		.setType("balance",DataUnpacker.TYPE.DOUBLE).execute(data);
-		
+
 		String name = (String) resultsMap.get("name");
 		int password = (int) resultsMap.get("password");
 		String currency = (String) resultsMap.get("currency");
