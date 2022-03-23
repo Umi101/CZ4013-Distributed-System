@@ -21,6 +21,15 @@ public class Bank {
         return newAcc.getAccNum();
     }
 
+    public int closeAccount(String name, int password, int accNum){
+        Account acc = this.accounts.get(accNum);
+        if (acc == null) {return -1;} // Error No. -1: Account No. does not exist
+        if (acc.getName()!= name) {return -2;} // Error No. -2: Wrong name
+        if (acc.getPassword()!= password) {return -3;} // Error No. -3: Wrong password
+        System.out.printf("Account %d successfully closed.%n", accNum);
+        return 0; // successful
+    }
+
     private boolean checkDuplicates(int count){
         return accounts.containsKey(count);
     }
