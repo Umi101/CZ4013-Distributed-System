@@ -11,7 +11,7 @@ def main():
 
     # Client Configuration
     port = 2222
-    host = '127.0.0.1'
+    host = 'localhost'
     # port = console.prompt_int("Enter client's port number : ")
     # host = console.prompt_string('Enter client address : ')
     client = Client(port,host)
