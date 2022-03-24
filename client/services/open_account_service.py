@@ -14,7 +14,14 @@ def open_account(
     password = console.prompt_int('Enter your 4 digit pin number : ')
     while len(str(password)) != 4:
         password = console.prompt_int('Enter your 4 digit pin number : ')
-    currency = console.prompt_string('Enter your currency : ')
+    currency = console.prompt_int('Enter your currency(1 SGD  2 USD) :')
+    while currency != 1 and currency != 2:
+        print("Please enter a valid choice!")
+        currency = console.prompt_int('Enter your currency(1 SGD   2 USD) :')
+    if currency == 1:
+        currency = "S$"
+    elif currency == 2:
+        currency = "$"
     balance = console.prompt_float('Enter your initial balance : ')
     while balance < 0:
         balance = console.prompt_float('Enter your initial balance : ')

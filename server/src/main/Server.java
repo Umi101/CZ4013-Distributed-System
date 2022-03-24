@@ -8,6 +8,7 @@ import java.util.Arrays;
 import service.OpenAccountService;
 import service.CloseAccountService;
 import service.UpdateAccountService;
+import service.CheckAccountBalance;
 
 import entity.Bank;
 
@@ -52,6 +53,11 @@ public class Server {
 				case 3:
 					UpdateAccountService s3 = new UpdateAccountService();
 					s3.handleService(data, this, clientAddress, clientPortNumber);
+				case 4:
+					break;
+				case 5:
+					CheckAccountBalance s5 = new CheckAccountBalance();
+					s5.handleService(data, this, clientAddress, clientPortNumber);
 				default:
 					break;
 				}
