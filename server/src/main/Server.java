@@ -36,6 +36,8 @@ public class Server {
                 InetAddress clientAddress = p.getAddress();
                 int clientPortNumber = p.getPort();
 				int serviceRequested = p.getData()[1];
+				
+				
 				System.out.printf("The service requested is %d.%n", serviceRequested);
 				byte[] data = p.getData();
 				switch(serviceRequested) {

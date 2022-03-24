@@ -21,7 +21,7 @@ def open_account(
     # Construct byte array
     builder = DataBuilder()
     builder.set_two_byte('service_id',service_id).\
-        set_two_byte('message_id',message_id).\
+        set_int('message_id',message_id).\
         set_string('name',name).\
         set_int('password',password).\
         set_string('currency',currency).\

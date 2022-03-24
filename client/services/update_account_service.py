@@ -25,7 +25,7 @@ def update_account(
     # Construct byte array
     builder = DataBuilder()
     builder.set_two_byte('service_id',service_id).\
-        set_two_byte('message_id',message_id).\
+        set_int('message_id',message_id).\
         set_int('withdraw_choice',next_choice).\
         set_string('name',name). \
         set_int('acc_no', acc_no). \

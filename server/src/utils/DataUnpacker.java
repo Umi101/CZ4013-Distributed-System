@@ -7,71 +7,50 @@ import java.nio.ByteBuffer;
 public class DataUnpacker {
 	
 	private ArrayList<String> keys;
-//	private HashMap <String, TYPE> results;
+	private HashMap <String, TYPE> keysToType;
 	
 	
-	public enum TYPE { INTEGER, DOUBLE, STRING}
+	public enum TYPE { INTEGER, DOUBLE, STRING, TWO_BYTE_INT}
 	public DataUnpacker(){
 		keys = new ArrayList<>();
-//		results = new HashMap<>();
+		keysToType = new HashMap<>();
 	}
 	
 	public HashMap <String, Object> execute(byte[] data){
 		HashMap<String, Object> map = new HashMap<>();
 		try {
-			int offset = 4;
+			int offset = 2;
 			for(int i =0 ;i < keys.size();i++) {
-				if (keys.get(i).equals("name")){
-					offset += 4; // name == 4 , (string)
-					int len = bytesToInt(data,offset);
-					offset += 4;
-					String name = bytesToString(data,offset,len);
-					map.put("name",name);
-					offset += len;
-				}
-				if (keys.get(i).equals("password")){
-					offset += 8; // password  == 8, int()
-					int password = bytesToInt(data,offset);
-					map.put("password",password);
-					offset += 4 ;
-				}
-				if (keys.get(i).equals("currency")){
-					offset += 8; // currency == 8 , (string)
-					int len = bytesToInt(data,offset);
-					offset += 4;
-					String currency = bytesToString(data,offset,len);
-					map.put("currency",currency);
-					offset += 4;
-				}
-				if (keys.get(i).equals("balance")){
-					offset += 6; // balance == 8 , (double)
-					Double balance = bytesToDouble(data,offset);
-					map.put("balance",balance);
-					offset += 4;
-				}
-				if (keys.get(i).equals("acc_no")){
-					offset += 6; // acc_no  == 6, int()
-					int acc_no = bytesToInt(data,offset);
-					map.put("acc_no",acc_no);
-					offset += 4 ;
-				}
-				if (keys.get(i).equals("withdraw_choice")){
-					offset += 15; // acc_no  == 6, int()
-					int withdraw_choice = bytesToInt(data,offset);
-					map.put("withdraw_choice",withdraw_choice);
-					offset += 4 ;
-				}
-				if (keys.get(i).equals("amount")){
-					offset += 6; // balance == 8 , (double)
-					Double amount = bytesToDouble(data,offset);
-					map.put("amount",amount);
-					offset += 4;
-				}
-				if (keys.get(i).equals("interval")){
-					offset += 15; // acc_no  == 6, int()
-					int interval = bytesToInt(data,offset);
-					map.put("interval",interval);
-					offset += 4 ;
+				String key = keys.get(i);
+				TYPE value = keysToType.get(keys.get(i));
+//				System.out.printf("Key : %s, Value: %s , Key Length : :%d \n", key,value,key.length());
+				
+				switch (value){
+					case TWO_BYTE_INT:
+						break;
+					case INTEGER:
+						offset += key.length();
+						int k = bytesToInt(data,offset);
+						map.put(key,k);
+						offset += 4 ;
+						break;
+					case DOUBLE:
+						offset +=  key.length(); 
+						Double d = bytesToDouble(data,offset);
+						map.put(key,d);
+						offset += 4;
+						break;
+					case STRING:
+						offset += key.length();
+						int len = bytesToInt(data,offset);
+						offset += 4;
+						String s = bytesToString(data,offset,len);
+						map.put(key,s);
+						offset += len;
+						break;
+					default:
+						System.out.println("Default case");
+						break;
 				}
 				
 			}
@@ -116,6 +95,7 @@ public class DataUnpacker {
 		return value;
 	}
 	
+	
 	public static class DataPackage{
 		
 		
@@ -127,6 +107,7 @@ public class DataUnpacker {
 		
 		public DataPackage setType(String key, TYPE type) {
 			unpacker.keys.add(key);
+			unpacker.keysToType.put(key, type);
 			return this;
 		}
 		

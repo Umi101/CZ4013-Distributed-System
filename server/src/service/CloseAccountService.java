@@ -10,19 +10,22 @@ public class CloseAccountService {
 
 	public void handleService(byte [] data, Server server,InetAddress clientAddress,int clientPortNumber) {
 		HashMap <String, Object> resultsMap = new DataUnpacker.DataPackage()
-				.setType("service_id",DataUnpacker.TYPE.INTEGER)
-				.setType("message_id",DataUnpacker.TYPE.INTEGER)
+				.setType("service_id",DataUnpacker.TYPE.TWO_BYTE_INT)
+				.setType("message_id",DataUnpacker.TYPE.INTEGER)			
 		 		.setType("name",DataUnpacker.TYPE.STRING)
 		 		.setType("acc_no",DataUnpacker.TYPE.INTEGER)
 		 		.setType("password",DataUnpacker.TYPE.INTEGER).execute(data);
 
 		String s;
+		int messageId = (int) resultsMap.get("message_id");
 		String name = (String) resultsMap.get("name");
 		int password = (int) resultsMap.get("password");
 		int acc_no = (int) resultsMap.get("acc_no");
-//		System.out.println(name);
-//		System.out.println(password);
-//		System.out.println(acc_no);
+		
+		System.out.printf("Message id: %d \n",messageId);
+		System.out.println(name);
+		System.out.println(password);
+		System.out.println(acc_no);
 
 		int flag = server.bank.closeAccount(name, password, acc_no);
 		System.out.println("------ Closing Account.");

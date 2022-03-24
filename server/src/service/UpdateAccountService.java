@@ -9,24 +9,31 @@ import utils.DataUnpacker;
 public class UpdateAccountService {
 
 	public void handleService(byte [] data, Server server,InetAddress clientAddress,int clientPortNumber) {
+		
+
 		HashMap <String, Object> resultsMap = new DataUnpacker.DataPackage()
-				.setType("service_id",DataUnpacker.TYPE.INTEGER)
+				.setType("service_id",DataUnpacker.TYPE.TWO_BYTE_INT)
 				.setType("message_id",DataUnpacker.TYPE.INTEGER)
 				.setType("withdraw_choice",DataUnpacker.TYPE.INTEGER)
 		 		.setType("name",DataUnpacker.TYPE.STRING)
 				.setType("acc_no",DataUnpacker.TYPE.INTEGER)
 		 		.setType("password",DataUnpacker.TYPE.INTEGER)
 		 		.setType("amount",DataUnpacker.TYPE.DOUBLE).execute(data);
+		
 
 		String s;
 		String name = (String) resultsMap.get("name");
+		int messageId = (int) resultsMap.get("message_id");
 		int password = (int) resultsMap.get("password");
 		int toWithdraw = (int) resultsMap.get("withdraw_choice");
 		int acc_no = (int) resultsMap.get("acc_no");
 		double amount = (double) resultsMap.get("amount");
-//		System.out.println(toWithdraw);
-//		System.out.println(name);
-//		System.out.println(password);
+		
+		System.out.printf("Message id: %d \n",messageId);
+		
+		System.out.println(toWithdraw);
+		System.out.println(name);
+		System.out.println(password);
 		if (toWithdraw == 1) {
 			amount = -amount;
 		}
