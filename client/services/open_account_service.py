@@ -34,7 +34,15 @@ def open_account(
     client.send(builder.create())
 
     # Receive response
-    response = client.receive()
+    while True:
+        try:
+            response = client.receive()
+            break
+        except TimeoutError as e:
+            print('Timeout ... attempting to resend again.')
+            client.send(builder.create())
+
+
     print(response.decode('ascii'))
     
 
