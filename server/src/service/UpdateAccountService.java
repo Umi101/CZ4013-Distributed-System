@@ -3,12 +3,13 @@ package service;
 import java.net.InetAddress;
 import java.util.HashMap;
 
+import entity.Listeners;
 import main.Server;
 import utils.DataUnpacker;
 
 public class UpdateAccountService {
 
-	public void handleService(byte [] data, Server server,InetAddress clientAddress,int clientPortNumber) {
+	public void handleService(byte[] data, Server server, InetAddress clientAddress, int clientPortNumber, Listeners listeners) {
 		
 
 		HashMap <String, Object> resultsMap = new DataUnpacker.DataPackage()
@@ -69,6 +70,7 @@ public class UpdateAccountService {
 			catch(Exception e) {
 				e.printStackTrace();
 			}
+			if (listeners.getCount()!=0){listeners.broadcast(s, server.designatedSocket, clientAddress);}
 		}
 //		// Construct payload
 //		String s = "Updaing account in progress ... \nhello \nworld special character &**()";

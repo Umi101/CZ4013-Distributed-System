@@ -25,7 +25,8 @@ def monitor_account(
     client.send(builder.create())
 
     # Receive response
-    response = client.receive()
-    print(response)
+    while True:
+        response = client.receive()
+        print(response)
     
 

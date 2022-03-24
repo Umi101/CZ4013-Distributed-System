@@ -1,5 +1,6 @@
 package main;
 
+import entity.Listeners;
 import utils.Socket;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -9,6 +10,8 @@ import service.OpenAccountService;
 import service.CloseAccountService;
 import service.UpdateAccountService;
 import service.CheckAccountBalance;
+import service.MonitorAccountService;
+
 
 import entity.Bank;
 
@@ -19,11 +22,13 @@ public class Server {
     protected byte[] buffer;
     public Bank bank;
     protected final int BUFFERSIZE = 2048;
+    protected Listeners listeners;
 
     public Server(Socket socket) {
         this.designatedSocket = socket;
         this.buffer = new byte[BUFFERSIZE];
         this.bank = new Bank();
+        this.listeners = new Listeners();
     }
 
     public void start() {
@@ -44,20 +49,24 @@ public class Server {
 				switch(serviceRequested) {
 				case 1:
 			  		OpenAccountService s1 = new OpenAccountService();
-			  		s1.handleService(data,this,clientAddress,clientPortNumber);
+			  		s1.handleService(data,this,clientAddress,clientPortNumber, listeners);
 					break;
 				case 2:
 			  		CloseAccountService s2 = new CloseAccountService();
-			  		s2.handleService(data,this,clientAddress,clientPortNumber);
+			  		s2.handleService(data,this,clientAddress,clientPortNumber, listeners);
 					break;
 				case 3:
 					UpdateAccountService s3 = new UpdateAccountService();
-					s3.handleService(data, this, clientAddress, clientPortNumber);
-				case 4:
-					break;
+                    s3.handleService(data, this, clientAddress, clientPortNumber, listeners);
+                    break;
+                case 4:
+                    MonitorAccountService s4 = new MonitorAccountService();
+                    s4.handleService(data, this, clientAddress, clientPortNumber, listeners);
+                    break;
 				case 5:
 					CheckAccountBalance s5 = new CheckAccountBalance();
 					s5.handleService(data, this, clientAddress, clientPortNumber);
+                    break;
 				default:
 					break;
 				}
