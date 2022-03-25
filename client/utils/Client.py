@@ -1,4 +1,5 @@
 import socket
+import random
 
 class Client():
     def __init__(self,server_port,server_address):
@@ -6,6 +7,7 @@ class Client():
         self.server_address = server_address
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.message_id = 0
+        self.clientType = 0 # 0 for normal client, 1 to simulate packet loss (wip)
     
     def get_server_address(self):
         return self.server_address
@@ -21,7 +23,8 @@ class Client():
     def send(self,byte_data):
         self.socket.sendto(byte_data,(self.server_address, self.server_port))
 
-    def receive(self):
+    def receive(self):  
+        self.socket.settimeout(5.0)  # in seconds
         data = self.socket.recv(2048)
         return data
           

@@ -5,6 +5,7 @@ import utils.Socket;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import service.OpenAccountService;
 import service.CloseAccountService;
@@ -31,52 +32,63 @@ public class Server {
         this.listeners = new Listeners();
     }
 
-    public void start() {
+    @SuppressWarnings("finally")
+	public void start() {
 
         while (true) {
             try {
                 portNumber = designatedSocket.getSocket().getLocalPort();
                 ipAddress = designatedSocket.getSocket().getLocalAddress().getHostAddress();
                 // System.out.printf("Server active. Port: %d, IP: %s.%n", portNumber, ipAddress);
-                DatagramPacket p = receive();
-                InetAddress clientAddress = p.getAddress();
-                int clientPortNumber = p.getPort();
-				int serviceRequested = p.getData()[1];
-				
-				
-				System.out.printf("The service requested is %d.%n", serviceRequested);
-				byte[] data = p.getData();
-				switch(serviceRequested) {
-				case 1:
-			  		OpenAccountService s1 = new OpenAccountService();
-			  		s1.handleService(data,this,clientAddress,clientPortNumber, listeners);
-					break;
-				case 2:
-			  		CloseAccountService s2 = new CloseAccountService();
-			  		s2.handleService(data,this,clientAddress,clientPortNumber, listeners);
-					break;
-				case 3:
-					UpdateAccountService s3 = new UpdateAccountService();
-                    s3.handleService(data, this, clientAddress, clientPortNumber, listeners);
-                    break;
-                case 4:
-                    MonitorAccountService s4 = new MonitorAccountService();
-                    s4.handleService(data, this, clientAddress, clientPortNumber, listeners);
-                    break;
-				case 5:
-					CheckAccountBalance s5 = new CheckAccountBalance();
-					s5.handleService(data, this, clientAddress, clientPortNumber);
-                    break;
-				default:
-					break;
-				}
-                System.out.println(p);
-            } catch (IOException e) {	
-                e.printStackTrace();
-            } catch (NullPointerException e) {
+                DatagramPacket p = receive();                
+                if(p.getLength() != 0) {
+                    InetAddress clientAddress = p.getAddress();
+                    int clientPortNumber = p.getPort();
+    				int serviceRequested = p.getData()[1];
+    				
+    				
+    				System.out.printf("The service requested is %d.%n", serviceRequested);
+    				byte[] data = p.getData();
+    				switch(serviceRequested) {
+    				case 1:
+    			  		OpenAccountService s1 = new OpenAccountService();
+    			  		s1.handleService(data,this,clientAddress,clientPortNumber);
+    					break;
+    				case 2:
+    			  		CloseAccountService s2 = new CloseAccountService();
+    			  		s2.handleService(data,this,clientAddress,clientPortNumber);
+    					break;
+    				case 3:
+    					UpdateAccountService s3 = new UpdateAccountService();
+    					s3.handleService(data, this, clientAddress, clientPortNumber);
+            case 4:
+                MonitorAccountService s4 = new MonitorAccountService();
+                s4.handleService(data, this, clientAddress, clientPortNumber, listeners);
+                break;
+    				case 5:
+                CheckAccountBalance s5 = new CheckAccountBalance();
+                s5.handleService(data, this, clientAddress, clientPortNumber);
+                break;
+    				default:
+    					break;
+    				}
+                    System.out.println(p);
+                }
+            
+            }
+            catch (SocketTimeoutException e) {
+            	System.out.println("Packet loss, unable to receive data");
+            }
+            catch (IOException e) {	
+                e.printStackTrace();   
+            } 
+            catch (NullPointerException e) {
+
                 Console.debug("Received corrupted data");
                 e.printStackTrace();
-            } finally {
+            }
+            
+            finally {
                 continue;
             }
         }
