@@ -6,6 +6,7 @@ from services.open_account_service import open_account
 from services.close_account_service import close_account
 from services.update_account_service import update_account
 from services.monitor_accounts_service import monitor_account
+from services.check_account_balance_service import check_account_balance
 
 def main():
 
@@ -25,7 +26,7 @@ def main():
     2. Close an existing account
     3. Withdraw from account / Deposit into account
     4. Monitor updates made to all bank account
-    5. Idempotent operation (TO DO)
+    5. Check Account Balance
     6. Non-Idempotent operation (TO DO)
     7. Exit
     '''
@@ -45,7 +46,7 @@ def main():
         elif choice == 4:
             monitor_account(console,client)
         elif choice == 5:
-            pass
+            check_account_balance(console,client)
         elif choice == 6:
             pass
         elif choice == 7:

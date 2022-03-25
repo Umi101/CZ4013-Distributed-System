@@ -34,6 +34,17 @@ public class Bank {
         System.out.printf("Account %d successfully closed.%n", accNum);
         return 0; // successful
     }
+    
+    public double checkAccountBalance(String name, int password, int accNum) {
+    	Account acc = this.accounts.get(accNum);
+    	if (acc == null) {return -1;}
+    	return acc.getBalance();
+    }
+    
+    public String checkAccountCurrency(String name, int password, int accNum) {
+    	Account acc = this.accounts.get(accNum);
+    	return acc.getCurrency();
+    }
 
     public double updateAccount(String name, int password, int accNum, double amount){
         Account acc = this.accounts.get(accNum);

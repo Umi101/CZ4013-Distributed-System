@@ -1,5 +1,6 @@
 package main;
 
+import entity.Listeners;
 import utils.Socket;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -9,6 +10,9 @@ import java.util.Arrays;
 import service.OpenAccountService;
 import service.CloseAccountService;
 import service.UpdateAccountService;
+import service.CheckAccountBalance;
+import service.MonitorAccountService;
+
 
 import entity.Bank;
 
@@ -19,11 +23,13 @@ public class Server {
     protected byte[] buffer;
     public Bank bank;
     protected final int BUFFERSIZE = 2048;
+    protected Listeners listeners;
 
     public Server(Socket socket) {
         this.designatedSocket = socket;
         this.buffer = new byte[BUFFERSIZE];
         this.bank = new Bank();
+        this.listeners = new Listeners();
     }
 
     @SuppressWarnings("finally")
@@ -34,8 +40,7 @@ public class Server {
                 portNumber = designatedSocket.getSocket().getLocalPort();
                 ipAddress = designatedSocket.getSocket().getLocalAddress().getHostAddress();
                 // System.out.printf("Server active. Port: %d, IP: %s.%n", portNumber, ipAddress);
-                DatagramPacket p = receive();
-                
+                DatagramPacket p = receive();                
                 if(p.getLength() != 0) {
                     InetAddress clientAddress = p.getAddress();
                     int clientPortNumber = p.getPort();
@@ -56,6 +61,14 @@ public class Server {
     				case 3:
     					UpdateAccountService s3 = new UpdateAccountService();
     					s3.handleService(data, this, clientAddress, clientPortNumber);
+            case 4:
+                MonitorAccountService s4 = new MonitorAccountService();
+                s4.handleService(data, this, clientAddress, clientPortNumber, listeners);
+                break;
+    				case 5:
+                CheckAccountBalance s5 = new CheckAccountBalance();
+                s5.handleService(data, this, clientAddress, clientPortNumber);
+                break;
     				default:
     					break;
     				}
@@ -70,6 +83,7 @@ public class Server {
                 e.printStackTrace();   
             } 
             catch (NullPointerException e) {
+
                 Console.debug("Received corrupted data");
                 e.printStackTrace();
             }

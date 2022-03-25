@@ -2,12 +2,14 @@ package service;
 
 import java.net.InetAddress;
 import java.util.HashMap;
+
+import entity.Listeners;
 import utils.DataUnpacker;
 import main.Server;
 
 public class OpenAccountService {
 	
-	public void handleService(byte [] data, Server server,InetAddress clientAddress,int clientPortNumber) {
+	public void handleService(byte[] data, Server server, InetAddress clientAddress, int clientPortNumber, Listeners listeners) {
 		HashMap <String, Object> resultsMap = new DataUnpacker.DataPackage()
 				.setType("service_id",DataUnpacker.TYPE.TWO_BYTE_INT)
 				.setType("message_id",DataUnpacker.TYPE.INTEGER)
@@ -46,10 +48,11 @@ public class OpenAccountService {
 			catch(Exception e) {
 				e.printStackTrace();
 			}
+
 		}
 		else
 		{
-			String s = String.format("The account id is: %d%n",flag);
+			String s = String.format("New account created. The account id is: %d%n",flag);
 			byte[] buffer = new byte[s.length()];
 			int index = 0;
 			for(byte b: s.getBytes()){
@@ -61,6 +64,7 @@ public class OpenAccountService {
 			catch(Exception e) {
 				e.printStackTrace();
 			}
+			if (listeners.getCount()!=0){listeners.broadcast(s, server.designatedSocket, clientAddress);}
 		}
 	}
 }
