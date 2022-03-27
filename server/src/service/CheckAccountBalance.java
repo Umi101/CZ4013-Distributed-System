@@ -3,12 +3,13 @@ package service;
 import java.net.InetAddress;
 import java.util.HashMap;
 
+import entity.Listeners;
 import main.Server;
 import utils.DataUnpacker;
 
 public class CheckAccountBalance {
 	
-	public void handleService(byte [] data, Server server, InetAddress clientAddress, int clientPortNumber) {
+	public void handleService(byte [] data, Server server, InetAddress clientAddress, int clientPortNumber, Listeners listeners) {
 		HashMap <String, Object> resultsMap = new DataUnpacker.DataPackage()
 						.setType("service_id", DataUnpacker.TYPE.TWO_BYTE_INT)
 						.setType("message_id",DataUnpacker.TYPE.INTEGER)			
@@ -29,7 +30,7 @@ public class CheckAccountBalance {
 		System.out.println(acc_no);
 		
 		double balance = server.bank.checkAccountBalance(name, password, acc_no);
-		System.out.println("------- Updating Account.");
+		System.out.println("------ Checking Account Balance.");
 		if (balance == -1) {
 			s = "Account does not exist. Try again.";
 		}
@@ -49,5 +50,6 @@ public class CheckAccountBalance {
 		catch(Exception e) {
 			e.printStackTrace();
 		}
+		if (listeners.getCount()!=0){listeners.broadcast(s, server.designatedSocket, clientAddress);}
 	}
 }

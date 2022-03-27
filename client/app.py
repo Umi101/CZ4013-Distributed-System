@@ -7,6 +7,7 @@ from services.close_account_service import close_account
 from services.update_account_service import update_account
 from services.monitor_accounts_service import monitor_account
 from services.check_account_balance_service import check_account_balance
+from services.money_transfer_service import money_transfer
 
 def main():
 
@@ -27,7 +28,7 @@ def main():
     3. Withdraw from account / Deposit into account
     4. Monitor updates made to all bank account
     5. Check Account Balance
-    6. Non-Idempotent operation (TO DO)
+    6. Money Transfer
     7. Exit
     '''
     print(textwrap.dedent(menu))
@@ -48,7 +49,7 @@ def main():
         elif choice == 5:
             check_account_balance(console,client)
         elif choice == 6:
-            pass
+            money_transfer(console, client)
         elif choice == 7:
             sys.exit(0)
         

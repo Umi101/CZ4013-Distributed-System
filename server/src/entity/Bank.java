@@ -55,6 +55,12 @@ public class Bank {
         acc.setBalance(tempBal);
         return acc.getBalance();
     }
+    
+    public int checkAccountExist(int accNum) {
+    	Account acc = this.accounts.get(accNum);
+    	if (acc == null) {return -1;}
+    	return 1;
+    }
 
 
     private boolean checkDuplicates(int count){

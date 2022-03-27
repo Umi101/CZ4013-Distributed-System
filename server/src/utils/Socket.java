@@ -23,7 +23,7 @@ public class Socket {
 	}
 	
 	public int getSocketType() {
-		return this.type;
+		return this.socketType;
 	}
 	
 	

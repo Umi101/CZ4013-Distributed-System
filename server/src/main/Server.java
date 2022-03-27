@@ -12,7 +12,7 @@ import service.CloseAccountService;
 import service.UpdateAccountService;
 import service.CheckAccountBalance;
 import service.MonitorAccountService;
-
+import service.MoneyTransferService;
 
 import entity.Bank;
 
@@ -52,23 +52,26 @@ public class Server {
     				switch(serviceRequested) {
     				case 1:
     			  		OpenAccountService s1 = new OpenAccountService();
-    			  		s1.handleService(data,this,clientAddress,clientPortNumber);
+    			  		s1.handleService(data,this,clientAddress,clientPortNumber, listeners);
     					break;
     				case 2:
     			  		CloseAccountService s2 = new CloseAccountService();
-    			  		s2.handleService(data,this,clientAddress,clientPortNumber);
+    			  		s2.handleService(data,this,clientAddress,clientPortNumber, listeners);
     					break;
     				case 3:
     					UpdateAccountService s3 = new UpdateAccountService();
-    					s3.handleService(data, this, clientAddress, clientPortNumber);
-            case 4:
-                MonitorAccountService s4 = new MonitorAccountService();
-                s4.handleService(data, this, clientAddress, clientPortNumber, listeners);
-                break;
+    					s3.handleService(data, this, clientAddress, clientPortNumber, listeners);
+		            case 4:
+		                MonitorAccountService s4 = new MonitorAccountService();
+		                s4.handleService(data, this, clientAddress, clientPortNumber, listeners);
+		                break;
     				case 5:
-                CheckAccountBalance s5 = new CheckAccountBalance();
-                s5.handleService(data, this, clientAddress, clientPortNumber);
-                break;
+		                CheckAccountBalance s5 = new CheckAccountBalance();
+		                s5.handleService(data, this, clientAddress, clientPortNumber, listeners);
+		                break;
+    				case 6:
+    					MoneyTransferService s6 = new MoneyTransferService();
+    					s6.handleService(data, this, clientAddress, clientPortNumber, listeners);
     				default:
     					break;
     				}
