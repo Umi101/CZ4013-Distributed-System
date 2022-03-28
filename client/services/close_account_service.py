@@ -36,7 +36,7 @@ def close_account(
         try:
             response = client.receive()
             break
-        except TimeoutError as e:
+        except:
             print('Timeout ... attempting to resend again.')
             client.send(builder.create())
             

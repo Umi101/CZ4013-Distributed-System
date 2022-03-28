@@ -23,9 +23,12 @@ class Client():
     def send(self,byte_data):
         self.socket.sendto(byte_data,(self.server_address, self.server_port))
 
-    def receive(self):  
+    def receive(self):
         self.socket.settimeout(5.0)  # in seconds
-        data = self.socket.recv(2048)
+        try:
+            data = self.socket.recv(2048)
+        except Exception:
+            raise TimeoutError
         return data
-          
+
 
