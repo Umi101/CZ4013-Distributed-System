@@ -14,8 +14,9 @@ def main():
     # Client Configuration
     port = 2222
     host = 'localhost'
-    # port = console.prompt_int("Enter client's port number : ")
-    # host = console.prompt_string('Enter client address : ')
+    console = Console()
+    # server_port = console.prompt_int("Enter server's port number : ")
+    # server_host = console.prompt_string('Enter server address : ')
     client = Client(port,host)
   
 
@@ -33,7 +34,7 @@ def main():
     '''
     print(textwrap.dedent(menu))
   
-    console = Console()
+    
 
     while True:
         choice = console.prompt_int('Enter a choice: ', minimum = 1, maximum = 7)
