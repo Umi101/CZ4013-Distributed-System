@@ -9,7 +9,7 @@ import utils.DataUnpacker;
 
 public class MoneyTransferService {
 	
-	public void handleService(byte [] data, Server server, InetAddress clientAddress, int clientPortNumber, Listeners listeners, int semantic) {
+	public void handleService(byte [] data, Server server, InetAddress clientAddress, int clientPortNumber, Listeners listeners, int semantic, HashMap<Integer, String> history) {
 		HashMap <String, Object> resultsMap = new DataUnpacker.DataPackage()
 						.setType("service_id", DataUnpacker.TYPE.TWO_BYTE_INT)
 						.setType("message_id",DataUnpacker.TYPE.INTEGER)			
@@ -35,21 +35,49 @@ public class MoneyTransferService {
 		System.out.println(transfer_acc_no);
 		System.out.println(transfer_amount);
 		
-		int transfer_acc_exist = server.bank.checkAccountExist(transfer_acc_no);
-		if (transfer_acc_exist == -1) {
-			s = "The account you are transferring to does not exist. Try Again";
-		}else {
-			double current_acc_bal = server.bank.updateAccount(name, password, acc_no, -transfer_amount);
-			System.out.println("------ Transferring.");
-			if (current_acc_bal<0) {
-				if (current_acc_bal == -1) {s = "Account does not exist. Try again.";}
-				else {s = "Insufficient Balance. Try again";}
+		if (semantic == 1) {
+			int transfer_acc_exist = server.bank.checkAccountExist(transfer_acc_no);
+			if (transfer_acc_exist == -1) {
+				s = "The account you are transferring to does not exist. Try Again";
 			}else {
-				double transfer_acc_bal = server.bank.updateAccount(name, password, transfer_acc_no, transfer_amount);
-				String currency = server.bank.checkAccountCurrency(name, password, acc_no);
-				s = String.format("You have successfully transfered %s%.2f to account No %d. Your current balance: %s%.2f", currency, transfer_amount, transfer_acc_no, currency, current_acc_bal);
+				double current_acc_bal = server.bank.updateAccount(name, password, acc_no, -transfer_amount);
+				System.out.println("------ Transferring.");
+				if (current_acc_bal<0) {
+					if (current_acc_bal == -1) {s = "Account does not exist. Try again.";}
+					else {s = "Insufficient Balance. Try again";}
+				}else {
+					double transfer_acc_bal = server.bank.updateAccount(name, password, transfer_acc_no, transfer_amount);
+					String currency = server.bank.checkAccountCurrency(name, password, acc_no);
+					s = String.format("You have successfully transfered %s%.2f to account No %d. Your current balance: %s%.2f", currency, transfer_amount, transfer_acc_no, currency, current_acc_bal);
+				}
 			}
 		}
+		else {
+			if (history.containsKey(messageId)) {
+				System.out.println("Duplicated request filtered. Retransmitting response.");
+				s = history.get(messageId);
+			}
+			else{
+				int transfer_acc_exist = server.bank.checkAccountExist(transfer_acc_no);
+				if (transfer_acc_exist == -1) {
+					s = "The account you are transferring to does not exist. Try Again";
+				}else {
+					double current_acc_bal = server.bank.updateAccount(name, password, acc_no, -transfer_amount);
+					System.out.println("------ Transferring.");
+					if (current_acc_bal<0) {
+						if (current_acc_bal == -1) {s = "Account does not exist. Try again.";}
+						else {s = "Insufficient Balance. Try again";}
+					}else {
+						double transfer_acc_bal = server.bank.updateAccount(name, password, transfer_acc_no, transfer_amount);
+						String currency = server.bank.checkAccountCurrency(name, password, acc_no);
+						s = String.format("You have successfully transfered %s%.2f to account No %d. Your current balance: %s%.2f", currency, transfer_amount, transfer_acc_no, currency, current_acc_bal);
+					}
+				}
+				history.put(messageId, s);
+			}
+		}
+		
+
 		
 		byte[] buffer = new byte[s.length()];
 		int index = 0;

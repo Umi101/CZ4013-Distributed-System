@@ -77,7 +77,7 @@ public class Server {
 		                break;
     				case 6:
     					MoneyTransferService s6 = new MoneyTransferService();
-    					s6.handleService(data, this, clientAddress, clientPortNumber, listeners, semantic);
+    					s6.handleService(data, this, clientAddress, clientPortNumber, listeners, semantic, history);
     				default:
     					break;
     				}

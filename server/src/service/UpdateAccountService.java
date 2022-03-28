@@ -1,6 +1,7 @@
 package service;
 
 import java.net.InetAddress;
+import java.net.SocketTimeoutException;
 import java.util.HashMap;
 
 import entity.Listeners;
@@ -22,7 +23,7 @@ public class UpdateAccountService {
 		 		.setType("amount",DataUnpacker.TYPE.DOUBLE).execute(data);
 		
 
-		String s = null;
+		String s;
 		String name = (String) resultsMap.get("name");
 		int messageId = (int) resultsMap.get("message_id");
 		int password = (int) resultsMap.get("password");
@@ -56,6 +57,7 @@ public class UpdateAccountService {
 		}
 		else {
 			if (history.containsKey(messageId)) {
+				System.out.println("Duplicated request filtered. Retransmitting response.");
 				s = history.get(messageId);
 			}
 			else {
@@ -82,6 +84,9 @@ public class UpdateAccountService {
 		}
 		try {
 			server.designatedSocket.send(buffer,clientAddress,clientPortNumber);
+		}
+		catch(SocketTimeoutException e) {
+			System.out.println("Packet loss, unable to send data");
 		}
 		catch(Exception e) {
 			e.printStackTrace();

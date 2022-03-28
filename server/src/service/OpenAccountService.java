@@ -20,7 +20,7 @@ public class OpenAccountService {
 		 		.setType("currency",DataUnpacker.TYPE.STRING)
 		 		.setType("balance",DataUnpacker.TYPE.DOUBLE).execute(data);
 		
-		//String s;
+		String s;
 		int messageId = (int) resultsMap.get("message_id");
 		String name = (String) resultsMap.get("name");
 		int password = (int) resultsMap.get("password");
@@ -37,7 +37,6 @@ public class OpenAccountService {
 //		System.out.printf("------ Account balance: %f%n",balance);
 		
 		
-		/*
 		if (semantic == 1) {
 			int flag = server.bank.openAccount(name, password, currency, balance);
 			if (flag == -1){
@@ -84,40 +83,7 @@ public class OpenAccountService {
 			e.printStackTrace();
 		}
 		if (listeners.getCount()!=0){listeners.broadcast(s, server.designatedSocket, clientAddress);}
-		*/
 		
-		int flag = server.bank.openAccount(name, password, currency, balance);
-		if (flag == -1){
-			String s = "Create account failed. Try again.";
-			byte[] buffer = new byte[s.length()];
-			int index = 0;
-			for(byte b: s.getBytes()){
-				buffer[index++] = b;
-			}
-			try {
-				server.designatedSocket.send(buffer,clientAddress,clientPortNumber);
-			}
-			catch(Exception e) {
-				e.printStackTrace();
-			}
-
-		}
-		else
-		{
-			String s = String.format("New account created. The account id is: %d%n",flag);
-			byte[] buffer = new byte[s.length()];
-			int index = 0;
-			for(byte b: s.getBytes()){
-				buffer[index++] = b;
-			}
-			try {
-				server.designatedSocket.send(buffer,clientAddress,clientPortNumber);
-			}
-			catch(Exception e) {
-				e.printStackTrace();
-			}
-			if (listeners.getCount()!=0){listeners.broadcast(s, server.designatedSocket, clientAddress);}
-		}
 		
 	}
 	
