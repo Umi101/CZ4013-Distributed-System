@@ -24,14 +24,23 @@ public class Application {
             address = InetAddress.getByName(IP_ADDR);
             System.out.printf("Starting server listening to Port %d, IP %s.%n", CLIENT_PORT_NO, IP_ADDR);
             
+            double lossRate;
+            
             int socketType = console.askForInteger(1,2,"Select socket type : \n1) Normal socket \n2) Packet loss socket");
-            double lossRate = console.askForDouble(0.0, 0.99, "Input packet loss rate (min: 0.0 max: 0.99)");
+            if (socketType == 1){
+            	lossRate = 0.0;
+            }
+            else{
+            	lossRate = console.askForDouble(0.0, 0.99, "Input packet loss rate (min: 0.0 max: 0.99): ");
+            }
+            
 
+            int semantic = console.askForInteger(1,2,"Select invocation semantic (1 At-least-once  2 At-most-once): ");
  
             System.out.printf("Socket type: %s \n",socketType);
             socket = new Socket(new DatagramSocket(SERVER_PORT_NO, address),socketType,lossRate);
             
-            server = new Server(socket);
+            server = new Server(socket, semantic);
             server.start();
         } catch (SocketException e) {
             e.printStackTrace();

@@ -7,6 +7,8 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 import java.util.Arrays;
+import java.util.HashMap;
+
 import service.OpenAccountService;
 import service.CloseAccountService;
 import service.UpdateAccountService;
@@ -24,12 +26,16 @@ public class Server {
     public Bank bank;
     protected final int BUFFERSIZE = 2048;
     protected Listeners listeners;
+    protected int semantic;
+    public HashMap<Integer, String> history;
 
-    public Server(Socket socket) {
+    public Server(Socket socket, int semantic) {
         this.designatedSocket = socket;
         this.buffer = new byte[BUFFERSIZE];
         this.bank = new Bank();
         this.listeners = new Listeners();
+        this.semantic = semantic;
+        this.history = new HashMap<Integer, String>();
     }
 
     @SuppressWarnings("finally")
@@ -52,26 +58,26 @@ public class Server {
     				switch(serviceRequested) {
     				case 1:
     			  		OpenAccountService s1 = new OpenAccountService();
-    			  		s1.handleService(data,this,clientAddress,clientPortNumber, listeners);
+    			  		s1.handleService(data,this,clientAddress,clientPortNumber, listeners, semantic, history);
     					break;
     				case 2:
     			  		CloseAccountService s2 = new CloseAccountService();
-    			  		s2.handleService(data,this,clientAddress,clientPortNumber, listeners);
+    			  		s2.handleService(data,this,clientAddress,clientPortNumber, listeners, semantic);
     					break;
     				case 3:
     					UpdateAccountService s3 = new UpdateAccountService();
-    					s3.handleService(data, this, clientAddress, clientPortNumber, listeners);
+    					s3.handleService(data, this, clientAddress, clientPortNumber, listeners, semantic, history);
 		            case 4:
 		                MonitorAccountService s4 = new MonitorAccountService();
-		                s4.handleService(data, this, clientAddress, clientPortNumber, listeners);
+		                s4.handleService(data, this, clientAddress, clientPortNumber, listeners, semantic);
 		                break;
     				case 5:
 		                CheckAccountBalance s5 = new CheckAccountBalance();
-		                s5.handleService(data, this, clientAddress, clientPortNumber, listeners);
+		                s5.handleService(data, this, clientAddress, clientPortNumber, listeners, semantic);
 		                break;
     				case 6:
     					MoneyTransferService s6 = new MoneyTransferService();
-    					s6.handleService(data, this, clientAddress, clientPortNumber, listeners);
+    					s6.handleService(data, this, clientAddress, clientPortNumber, listeners, semantic);
     				default:
     					break;
     				}

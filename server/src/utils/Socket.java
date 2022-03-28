@@ -39,7 +39,7 @@ public class Socket {
 		if (socketType == 2) {
 			double prob = random.nextDouble();
 			System.out.printf("Prob : %f\n", prob);
-			if (prob > lossRate) {
+			if (prob < lossRate) {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -74,7 +74,7 @@ public class Socket {
 		if (socketType == 2) {
 			double prob = random.nextDouble();
 			System.out.printf("Prob : %f\n", prob);
-			if (prob > lossRate) {
+			if (prob < lossRate) {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {

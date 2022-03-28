@@ -9,7 +9,7 @@ import utils.DataUnpacker;
 
 public class UpdateAccountService {
 
-	public void handleService(byte[] data, Server server, InetAddress clientAddress, int clientPortNumber, Listeners listeners) {
+	public void handleService(byte[] data, Server server, InetAddress clientAddress, int clientPortNumber, Listeners listeners, int semantic, HashMap<Integer, String> history) {
 		
 
 		HashMap <String, Object> resultsMap = new DataUnpacker.DataPackage()
@@ -22,7 +22,7 @@ public class UpdateAccountService {
 		 		.setType("amount",DataUnpacker.TYPE.DOUBLE).execute(data);
 		
 
-		String s;
+		String s = null;
 		String name = (String) resultsMap.get("name");
 		int messageId = (int) resultsMap.get("message_id");
 		int password = (int) resultsMap.get("password");
@@ -39,39 +39,55 @@ public class UpdateAccountService {
 			amount = -amount;
 		}
 //		System.out.println(amount);
-		double flag = server.bank.updateAccount(name, password, acc_no, amount);
 		System.out.println("------ Updating Account.");
-		if (flag < 0){
-			if (flag == -1) {s = "Account does not exist. Try again.";}
-			else {s = "Insufficient Balance. Try again.";}
-			byte[] buffer = new byte[s.length()];
-			int index = 0;
-			for(byte b: s.getBytes()){
-				buffer[index++] = b;
+		if (semantic == 1) {
+			double flag = server.bank.updateAccount(name, password, acc_no, amount);
+
+			if (flag < 0){
+				if (flag == -1) {s = "Account does not exist. Try again.";}
+				else {s = "Insufficient Balance. Try again.";}
+				
 			}
-			try {
-				server.designatedSocket.send(buffer,clientAddress,clientPortNumber);
-			}
-			catch(Exception e) {
-				e.printStackTrace();
+			else
+			{
+				String currency = server.bank.checkAccountCurrency(name, password, acc_no);
+				s = String.format("Account successfully updated. Your current account balance is: %s%.2f", currency, flag);
 			}
 		}
-		else
-		{
-			s = "Account successfully updated.";
-			byte[] buffer = new byte[s.length()];
-			int index = 0;
-			for(byte b: s.getBytes()){
-				buffer[index++] = b;
+		else {
+			if (history.containsKey(messageId)) {
+				s = history.get(messageId);
 			}
-			try {
-				server.designatedSocket.send(buffer,clientAddress,clientPortNumber);
+			else {
+				double flag = server.bank.updateAccount(name, password, acc_no, amount);
+				if (flag < 0){
+					if (flag == -1) {s = "Account does not exist. Try again.";}
+					else {s = "Insufficient Balance. Try again.";}
+					
+				}
+				else
+				{
+					String currency = server.bank.checkAccountCurrency(name, password, acc_no);
+					s = String.format("Account successfully updated. Your current account balance is: %s%.2f", currency, flag);
+				}
+				history.put(messageId, s);
 			}
-			catch(Exception e) {
-				e.printStackTrace();
-			}
-			if (listeners.getCount()!=0){listeners.broadcast(s, server.designatedSocket, clientAddress);}
 		}
+		
+		
+		byte[] buffer = new byte[s.length()];
+		int index = 0;
+		for(byte b: s.getBytes()){
+			buffer[index++] = b;
+		}
+		try {
+			server.designatedSocket.send(buffer,clientAddress,clientPortNumber);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		if (listeners.getCount()!=0){listeners.broadcast(s, server.designatedSocket, clientAddress);}
+		
 //		// Construct payload
 //		String s = "Updaing account in progress ... \nhello \nworld special character &**()";
 //		byte[] buffer = new byte[s.length()];
