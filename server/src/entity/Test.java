@@ -6,5 +6,6 @@ public class Test {
         Bank bank = new Bank();
         bank.openAccount("myname", 123123123, "SGD", 123123123);
         bank.openAccount("myname1", 123123123, "SGD", 123123123);
+
     }
 }

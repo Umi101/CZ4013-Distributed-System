@@ -28,14 +28,23 @@ public class MoneyTransferService {
 		int acc_no = (int) resultsMap.get("acc_no");
 		int transfer_acc_no = (int) resultsMap.get("transfer_acc_no");
 		double transfer_amount = (double) resultsMap.get("transfer_amount");
+		String currency = server.bank.checkAccountCurrency(name, password, acc_no);
+		String target_currency = server.bank.checkAccountCurrency(name, password, transfer_acc_no);
+		boolean flag = currency.equals(target_currency);
 		
-		System.out.printf("Message id: %d \n",messageId);
-		System.out.println(name);
-		System.out.println(password);
-		System.out.println(acc_no);
-		System.out.println(transfer_acc_no);
-		System.out.println(transfer_amount);
-		
+//		System.out.printf("Message id: %d \n",messageId);
+//		System.out.println(name);
+//		System.out.println(password);
+//		System.out.println(acc_no);
+//		System.out.println(transfer_acc_no);
+//		System.out.println(transfer_amount);
+		System.out.println("--------------------");
+		System.out.println(currency);
+		System.out.println(flag);
+		System.out.println(currency.equals("S$")&& flag == false);
+		System.out.println(currency.equals("$")&& flag == false);
+
+
 		if (semantic == 1) {
 			int transfer_acc_exist = server.bank.checkAccountExist(transfer_acc_no);
 			if (transfer_acc_exist == -1) {
@@ -47,10 +56,39 @@ public class MoneyTransferService {
 					if (current_acc_bal == -1) {s = "Account does not exist. Try again.";}
 					else {s = "Insufficient Balance. Try again";}
 				}else {
-					double transfer_acc_bal = server.bank.updateAccount(name, password, transfer_acc_no, transfer_amount);
-					String currency = server.bank.checkAccountCurrency(name, password, acc_no);
-					s = String.format("You have successfully transfered %s%.2f to account No %d. Your current balance: %s%.2f", currency, transfer_amount, transfer_acc_no, currency, current_acc_bal);
-				}
+					if (currency.equals("S$") && flag == false){
+						double transfer_acc_bal = server.bank.updateAccount(name, password, transfer_acc_no, 0.8*transfer_amount);
+						s = String.format("The currency type of your account is SGD but target account is USD.%n" +
+								"Today's exchange rate is 1SGD = 0.8USD.%n" +
+								String.format("Converting your %.2fSGD to %.2fUSD.%n",
+										transfer_amount,
+										0.8*transfer_amount)
+								+ String.format("You have successfully transfered %s%.2f to account No %d. Your current balance: %s%.2f",
+								target_currency,
+								0.8*transfer_amount,
+								transfer_acc_no,
+								currency,
+								current_acc_bal));
+
+					}
+					else if (currency.equals("$") && flag == false){
+						double transfer_acc_bal = server.bank.updateAccount(name, password, transfer_acc_no, 1.2*transfer_amount);
+						s = String.format("The currency type of your account is USD but target account is SGD.%n" +
+								"Today's exchange rate is 1USD = 1.2SGD.%n" +
+								String.format("Converting your %.2fUSD to %.2fSGD.%n",
+										transfer_amount,
+										1.2*transfer_amount)
+								+ String.format("You have successfully transfered %s%.2f to account No %d. Your current balance: %s%.2f",
+								target_currency,
+								1.2*transfer_amount,
+								transfer_acc_no,
+								currency,
+								current_acc_bal));
+					}
+					else{
+						double transfer_acc_bal = server.bank.updateAccount(name, password, transfer_acc_no, transfer_amount);
+						s = String.format("You have successfully transfered %s%.2f to account No %d. Your current balance: %s%.2f", currency, transfer_amount, transfer_acc_no, currency, current_acc_bal);
+					}}
 			}
 		}
 		else {
@@ -65,15 +103,47 @@ public class MoneyTransferService {
 				}else {
 					double current_acc_bal = server.bank.updateAccount(name, password, acc_no, -transfer_amount);
 					System.out.println("------ Transferring.");
+
 					if (current_acc_bal<0) {
 						if (current_acc_bal == -1) {s = "Account does not exist. Try again.";}
 						else {s = "Insufficient Balance. Try again";}
 					}else {
-						double transfer_acc_bal = server.bank.updateAccount(name, password, transfer_acc_no, transfer_amount);
-						String currency = server.bank.checkAccountCurrency(name, password, acc_no);
-						s = String.format("You have successfully transfered %s%.2f to account No %d. Your current balance: %s%.2f", currency, transfer_amount, transfer_acc_no, currency, current_acc_bal);
+						if (currency.equals("S$") && flag == false){
+							double transfer_acc_bal = server.bank.updateAccount(name, password, transfer_acc_no, 0.8*transfer_amount);
+							s = String.format("The currency type of your account is SGD but target account is USD.%n" +
+											"Today's exchange rate is 1SGD = 0.8USD.%n" +
+											String.format("Converting your %.2fSGD to %.2fUSD.%n",
+									transfer_amount,
+									0.8*transfer_amount)
+											+ String.format("You have successfully transfered %s%.2f to account No %d. Your current balance: %s%.2f",
+									target_currency,
+									0.8*transfer_amount,
+									transfer_acc_no,
+									currency,
+									current_acc_bal));
+
+						}
+						else if (currency.equals("$") && flag == false){
+							double transfer_acc_bal = server.bank.updateAccount(name, password, transfer_acc_no, 1.2*transfer_amount);
+							s = String.format("The currency type of your account is USD but target account is SGD.%n" +
+											"Today's exchange rate is 1USD = 1.2SGD.%n" +
+											String.format("Converting your %.2fUSD to %.2fSGD.%n",
+									transfer_amount,
+									1.2*transfer_amount)
+											+ String.format("You have successfully transfered %s%.2f to account No %d. Your current balance: %s%.2f",
+									target_currency,
+									1.2*transfer_amount,
+									transfer_acc_no,
+									currency,
+									current_acc_bal));
+						}
+						else{
+							double transfer_acc_bal = server.bank.updateAccount(name, password, transfer_acc_no, transfer_amount);
+							s = String.format("You have successfully transfered %s%.2f to account No %d. Your current balance: %s%.2f", currency, transfer_amount, transfer_acc_no, currency, current_acc_bal);
+						}
 					}
 				}
+				System.out.println("---333366633----------");
 				history.put(messageId, s);
 			}
 		}
