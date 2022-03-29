@@ -1,6 +1,7 @@
 package service;
 
 import java.net.InetAddress;
+import java.net.SocketTimeoutException;
 import java.util.HashMap;
 
 import entity.Listeners;
@@ -30,6 +31,9 @@ public class MonitorAccountService {
 		}
 		try {
 			server.designatedSocket.send(buffer,clientAddress,clientPortNumber);
+		}
+		catch(SocketTimeoutException e) {
+			System.out.println("Packet loss, unable to send data");
 		}
 		catch(Exception e) {
 			e.printStackTrace();

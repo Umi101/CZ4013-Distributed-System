@@ -62,11 +62,12 @@ public class Server {
     					break;
     				case 2:
     			  		CloseAccountService s2 = new CloseAccountService();
-    			  		s2.handleService(data,this,clientAddress,clientPortNumber, listeners, semantic);
+    			  		s2.handleService(data,this,clientAddress,clientPortNumber, listeners, semantic, history);
     					break;
     				case 3:
     					UpdateAccountService s3 = new UpdateAccountService();
     					s3.handleService(data, this, clientAddress, clientPortNumber, listeners, semantic, history);
+    					break;
 		            case 4:
 		                MonitorAccountService s4 = new MonitorAccountService();
 		                s4.handleService(data, this, clientAddress, clientPortNumber, listeners, semantic);
