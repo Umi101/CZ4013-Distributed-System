@@ -27,13 +27,8 @@ def monitor_account(
     # Receive response
     # response = client.receive()
     while True:
-        try:
-            response = client.receive()
-            break
-        except TimeoutError as e:
-            print('Timeout ... attempting to resend again.')
-            client.send(builder.create())
-            
-    print(response)
+        response = client.monitor()
+        print(response)
+
 
 

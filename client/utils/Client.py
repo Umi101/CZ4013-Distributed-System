@@ -31,4 +31,8 @@ class Client():
             raise TimeoutError
         return data
 
+    def monitor(self):
+        data = self.socket.recv(2048)
+        return data
+
 
