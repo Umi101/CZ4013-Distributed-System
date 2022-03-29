@@ -28,9 +28,7 @@ public class MoneyTransferService {
 		int acc_no = (int) resultsMap.get("acc_no");
 		int transfer_acc_no = (int) resultsMap.get("transfer_acc_no");
 		double transfer_amount = (double) resultsMap.get("transfer_amount");
-		String currency = server.bank.checkAccountCurrency(name, password, acc_no);
-		String target_currency = server.bank.checkAccountCurrency(name, password, transfer_acc_no);
-		boolean flag = currency.equals(target_currency);
+
 		
 //		System.out.printf("Message id: %d \n",messageId);
 //		System.out.println(name);
@@ -38,18 +36,25 @@ public class MoneyTransferService {
 //		System.out.println(acc_no);
 //		System.out.println(transfer_acc_no);
 //		System.out.println(transfer_amount);
-		System.out.println("--------------------");
-		System.out.println(currency);
-		System.out.println(flag);
-		System.out.println(currency.equals("S$")&& flag == false);
-		System.out.println(currency.equals("$")&& flag == false);
-
-
 		if (semantic == 1) {
+			int acc_exist = server.bank.checkAccountExist(acc_no);
 			int transfer_acc_exist = server.bank.checkAccountExist(transfer_acc_no);
+			System.out.println("------------------");
+			System.out.println(acc_exist);
+			System.out.println(transfer_acc_exist);
+			if (acc_exist == -1) {
+				s = "Your account No. does not exist. Try again.";
+			}
 			if (transfer_acc_exist == -1) {
-				s = "The account you are transferring to does not exist. Try Again";
-			}else {
+				s = "The account No. you are transferring to does not exist. Try again.";
+			}
+			if (acc_no == transfer_acc_no){
+				s = "You cannot transfer money to and from the same account. Try again.";
+			}
+			else {
+				String currency = server.bank.checkAccountCurrency(name, password, acc_no);
+				String target_currency = server.bank.checkAccountCurrency(name, password, transfer_acc_no);
+				boolean flag = currency.equals(target_currency);
 				double current_acc_bal = server.bank.updateAccount(name, password, acc_no, -transfer_amount);
 				System.out.println("------ Transferring.");
 				if (current_acc_bal<0) {
@@ -97,10 +102,17 @@ public class MoneyTransferService {
 				s = history.get(messageId);
 			}
 			else{
+				int acc_exist = server.bank.checkAccountExist(acc_no);
 				int transfer_acc_exist = server.bank.checkAccountExist(transfer_acc_no);
+				if (acc_exist == -1) {
+					s = "Your account No. does not exist. Try again.";
+				}
 				if (transfer_acc_exist == -1) {
 					s = "The account you are transferring to does not exist. Try Again";
 				}else {
+					String currency = server.bank.checkAccountCurrency(name, password, acc_no);
+					String target_currency = server.bank.checkAccountCurrency(name, password, transfer_acc_no);
+					boolean flag = currency.equals(target_currency);
 					double current_acc_bal = server.bank.updateAccount(name, password, acc_no, -transfer_amount);
 					System.out.println("------ Transferring.");
 
@@ -143,13 +155,10 @@ public class MoneyTransferService {
 						}
 					}
 				}
-				System.out.println("---333366633----------");
 				history.put(messageId, s);
 			}
 		}
-		
 
-		
 		byte[] buffer = new byte[s.length()];
 		int index = 0;
 		for(byte b: s.getBytes()) {
@@ -165,6 +174,5 @@ public class MoneyTransferService {
 			e.printStackTrace();
 		}
 		if (listeners.getCount()!=0){listeners.broadcast(s, server.designatedSocket, clientAddress);}
-		
 	}
 }
