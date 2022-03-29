@@ -45,10 +45,10 @@ public class MoneyTransferService {
 			if (acc_exist == -1) {
 				s = "Your account No. does not exist. Try again.";
 			}
-			if (transfer_acc_exist == -1) {
+			else if (transfer_acc_exist == -1) {
 				s = "The account No. you are transferring to does not exist. Try again.";
 			}
-			if (acc_no == transfer_acc_no){
+			else if (acc_no == transfer_acc_no){
 				s = "You cannot transfer money to and from the same account. Try again.";
 			}
 			else {
