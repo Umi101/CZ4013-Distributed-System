@@ -30,6 +30,14 @@ public class Bank {
         System.out.printf("Account %d successfully closed.%n", accNum);
         return 0; // successful
     }
+
+    public int verifyAccount(String name, int password, int accNum){
+        Account acc = this.accounts.get(accNum);
+        if (acc == null) {return -1;} // Error No. -1: Account No. does not exist
+        if (!acc.getName().equals(name)) {return -2;} // Error No. -2: Wrong name
+        if (acc.getPassword()!= password) {return -3;} // Error No. -3: Wrong password
+        return 0;
+    }
     
     public double checkAccountBalance(String name, int password, int accNum) {
     	Account acc = this.accounts.get(accNum);
