@@ -23,7 +23,7 @@ public class MonitorAccountService {
 //		System.out.printf("Message id: %d \n",messageId);
 		listeners.addListener(clientPortNumber, interval);
 		// Construct payload
-		String s = "Monitoring ... \nhello \nworld special character &**()";
+		String s = "Monitoring ...";
 		byte[] buffer = new byte[s.length()];
 		int index = 0;
 		for(byte b: s.getBytes()){
