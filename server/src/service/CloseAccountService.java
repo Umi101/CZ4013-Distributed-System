@@ -61,13 +61,11 @@ public class CloseAccountService {
 				else
 				{
 					s = String.format("Account id %d closed.",acc_no);
-
 				}
 				history.put(messageId, s);
 			}
 		}
-		
-		
+
 		byte[] buffer = new byte[s.length()];
 		int index = 0;
 		for(byte b: s.getBytes()){
@@ -83,19 +81,5 @@ public class CloseAccountService {
 			e.printStackTrace();
 		}
 		if (listeners.getCount()!=0){listeners.broadcast(s, server.designatedSocket, clientAddress);}
-		
-//		// Construct payload
-//		String s = "The account id is closed \nhello \nworld special character &**()";
-//		byte[] buffer = new byte[s.length()];
-//		int index = 0;
-//		for(byte b: s.getBytes()){
-//			buffer[index++] = b;
-//		}
-//		try {
-//			server.designatedSocket.send(buffer,clientAddress,clientPortNumber);
-//		}
-//		catch(Exception e) {
-//			e.printStackTrace();
-//		}
 	}
 }

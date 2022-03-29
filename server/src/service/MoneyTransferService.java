@@ -19,8 +19,7 @@ public class MoneyTransferService {
 				 		.setType("password",DataUnpacker.TYPE.INTEGER)
 				 		.setType("transfer_acc_no", DataUnpacker.TYPE.INTEGER)
 				 		.setType("transfer_amount", DataUnpacker.TYPE.DOUBLE).execute(data);
-						
-		
+
 		String s;
 		int messageId = (int) resultsMap.get("message_id");
 		String name = (String) resultsMap.get("name");
@@ -29,13 +28,6 @@ public class MoneyTransferService {
 		int transfer_acc_no = (int) resultsMap.get("transfer_acc_no");
 		double transfer_amount = (double) resultsMap.get("transfer_amount");
 
-		
-//		System.out.printf("Message id: %d \n",messageId);
-//		System.out.println(name);
-//		System.out.println(password);
-//		System.out.println(acc_no);
-//		System.out.println(transfer_acc_no);
-//		System.out.println(transfer_amount);
 		if (semantic == 1) {
 			int acc_exist = server.bank.checkAccountExist(acc_no);
 			int transfer_acc_exist = server.bank.checkAccountExist(transfer_acc_no);

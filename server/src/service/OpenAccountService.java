@@ -26,27 +26,15 @@ public class OpenAccountService {
 		int password = (int) resultsMap.get("password");
 		String currency = (String) resultsMap.get("currency");
 		Double balance = (Double) resultsMap.get("balance");
-		
-		
 		System.out.printf("Message id: %d \n",messageId);
-//		System.out.println("balance test");
-//		System.out.println(balance);
-//		System.out.printf("------ Account name: %s%n",name);
-//		System.out.printf("------ Account password: %s%n", password);
-//		System.out.printf("------ Account currency: %s%n",currency);
-//		System.out.printf("------ Account balance: %f%n",balance);
-		
-		
 		if (semantic == 1) {
 			int flag = server.bank.openAccount(name, password, currency, balance);
 			if (flag == -1){
 				s = "Create account failed. Try again.";
-
 			}
 			else
 			{
 				s = String.format("New account created. The account id is: %d%n",flag);
-				
 			}
 		}
 		else{
@@ -56,7 +44,6 @@ public class OpenAccountService {
 				int flag = server.bank.openAccount(name, password, currency, balance);
 				if (flag == -1){
 					s = "Account already existed. Try again.";
-
 				}
 				else
 				{
@@ -66,7 +53,6 @@ public class OpenAccountService {
 				history.put(messageId, s);
 			}
 		}
-		
 		
 		byte[] buffer = new byte[s.length()];
 		int index = 0;
