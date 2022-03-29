@@ -29,13 +29,16 @@ public class MoneyTransferService {
 		double transfer_amount = (double) resultsMap.get("transfer_amount");
 
 		if (semantic == 1) {
-			int acc_exist = server.bank.checkAccountExist(acc_no);
+			int acc_exist = server.bank.verifyAccount(name, password, acc_no);
 			int transfer_acc_exist = server.bank.checkAccountExist(transfer_acc_no);
-			System.out.println("------------------");
-			System.out.println(acc_exist);
-			System.out.println(transfer_acc_exist);
 			if (acc_exist == -1) {
 				s = "Your account No. does not exist. Try again.";
+			}
+			else if (acc_exist == -2){
+				s = "Your name does not match the record. Try again.";
+			}
+			else if (acc_exist == -3){
+				s = "Your password does not match. Try again.";
 			}
 			else if (transfer_acc_exist == -1) {
 				s = "The account No. you are transferring to does not exist. Try again.";
@@ -94,14 +97,24 @@ public class MoneyTransferService {
 				s = history.get(messageId);
 			}
 			else{
-				int acc_exist = server.bank.checkAccountExist(acc_no);
+				int acc_exist = server.bank.verifyAccount(name, password, acc_no);
 				int transfer_acc_exist = server.bank.checkAccountExist(transfer_acc_no);
 				if (acc_exist == -1) {
 					s = "Your account No. does not exist. Try again.";
 				}
-				if (transfer_acc_exist == -1) {
-					s = "The account you are transferring to does not exist. Try Again";
-				}else {
+				else if (acc_exist == -2){
+					s = "Your name does not match the record. Try again.";
+				}
+				else if (acc_exist == -3){
+					s = "Your password does not match. Try again.";
+				}
+				else if (transfer_acc_exist == -1) {
+					s = "The account No. you are transferring to does not exist. Try again.";
+				}
+				else if (acc_no == transfer_acc_no){
+					s = "You cannot transfer money to and from the same account. Try again.";
+				}
+				else {
 					String currency = server.bank.checkAccountCurrency(name, password, acc_no);
 					String target_currency = server.bank.checkAccountCurrency(name, password, transfer_acc_no);
 					boolean flag = currency.equals(target_currency);
