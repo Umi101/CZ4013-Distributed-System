@@ -3,8 +3,6 @@ package service;
 import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 import java.util.HashMap;
-import java.util.concurrent.TimeoutException;
-
 import entity.History;
 import entity.History.Client;
 import entity.Listeners;
@@ -32,12 +30,7 @@ public class OpenAccountService {
 		if (semantic == 1) {
 			int flag = server.bank.openAccount(name, password, currency, balance);
 			if (flag == -1){
-<<<<<<< HEAD
 				s = "Account already existed. Try again.";
-
-=======
-				s = "Create account failed. Try again.";
->>>>>>> branch 'main' of https://github.com/Umi101/CZ4013-Distributed-System.git
 			}
 			else
 			{

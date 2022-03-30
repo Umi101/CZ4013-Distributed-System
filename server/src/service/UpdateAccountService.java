@@ -12,13 +12,7 @@ import utils.DataUnpacker;
 
 public class UpdateAccountService {
 
-<<<<<<< HEAD
 	public void handleService(byte[] data, Server server, InetAddress clientAddress, int clientPortNumber, Listeners listeners, int semantic, History history) {
-		
-=======
-	public void handleService(byte[] data, Server server, InetAddress clientAddress, int clientPortNumber, Listeners listeners, int semantic, HashMap<Integer, String> history) {
->>>>>>> branch 'main' of https://github.com/Umi101/CZ4013-Distributed-System.git
-
 		HashMap <String, Object> resultsMap = new DataUnpacker.DataPackage()
 				.setType("service_id",DataUnpacker.TYPE.TWO_BYTE_INT)
 				.setType("message_id",DataUnpacker.TYPE.INTEGER)
