@@ -28,7 +28,8 @@ def monitor_account(
     # response = client.receive()
     while True:
         response = client.monitor()
-        print(response)
+        # print(response)
+        print(response.decode('ascii'))
 
 
 

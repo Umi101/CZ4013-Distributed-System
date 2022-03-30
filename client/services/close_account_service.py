@@ -40,5 +40,5 @@ def close_account(
             print('Timeout ... attempting to resend again.')
             client.send(builder.create())
             
-    print(response)
+    print(response.decode('ascii'))
 
