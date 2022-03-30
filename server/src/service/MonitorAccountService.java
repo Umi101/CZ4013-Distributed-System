@@ -18,12 +18,9 @@ public class MonitorAccountService {
 
 		int interval = (int) resultsMap.get("interval");
 		int messageId = (int) resultsMap.get("message_id");
-		
-//		System.out.println(interval);
-//		System.out.printf("Message id: %d \n",messageId);
 		listeners.addListener(clientPortNumber, interval);
 		// Construct payload
-		String s = "Monitoring ... \nhello \nworld special character &**()";
+		String s = "Monitoring ...";
 		byte[] buffer = new byte[s.length()];
 		int index = 0;
 		for(byte b: s.getBytes()){
