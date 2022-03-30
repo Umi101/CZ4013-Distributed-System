@@ -4,13 +4,15 @@ import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 import java.util.HashMap;
 
+import entity.History;
 import entity.Listeners;
+import entity.History.Client;
 import main.Server;
 import utils.DataUnpacker;
 
 public class MoneyTransferService {
 	
-	public void handleService(byte [] data, Server server, InetAddress clientAddress, int clientPortNumber, Listeners listeners, int semantic, HashMap<Integer, String> history) {
+	public void handleService(byte [] data, Server server, InetAddress clientAddress, int clientPortNumber, Listeners listeners, int semantic, History history) {
 		HashMap <String, Object> resultsMap = new DataUnpacker.DataPackage()
 						.setType("service_id", DataUnpacker.TYPE.TWO_BYTE_INT)
 						.setType("message_id",DataUnpacker.TYPE.INTEGER)			
@@ -54,11 +56,9 @@ public class MoneyTransferService {
 			}
 		}
 		else {
-			if (history.containsKey(messageId)) {
-				System.out.println("Duplicated request filtered. Retransmitting response.");
-				s = history.get(messageId);
-			}
-			else{
+			Client client = history.findClient(clientAddress, clientPortNumber);
+			s = client.filterDuplicates(messageId);
+			if (s == null) {
 				int transfer_acc_exist = server.bank.checkAccountExist(transfer_acc_no);
 				if (transfer_acc_exist == -1) {
 					s = "The account you are transferring to does not exist. Try Again";
@@ -74,8 +74,9 @@ public class MoneyTransferService {
 						s = String.format("You have successfully transfered %s%.2f to account No %d. Your current balance: %s%.2f", currency, transfer_amount, transfer_acc_no, currency, current_acc_bal);
 					}
 				}
-				history.put(messageId, s);
+				client.addToHistory(messageId, s);
 			}
+
 		}
 		
 

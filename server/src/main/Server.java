@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -17,6 +18,7 @@ import service.MonitorAccountService;
 import service.MoneyTransferService;
 
 import entity.Bank;
+import entity.History;
 
 public class Server {
     public Socket designatedSocket;
@@ -27,7 +29,7 @@ public class Server {
     protected final int BUFFERSIZE = 2048;
     protected Listeners listeners;
     protected int semantic;
-    public HashMap<Integer, String> history;
+    public History history;
 
     public Server(Socket socket, int semantic) {
         this.designatedSocket = socket;
@@ -35,7 +37,7 @@ public class Server {
         this.bank = new Bank();
         this.listeners = new Listeners();
         this.semantic = semantic;
-        this.history = new HashMap<Integer, String>();
+        this.history = new History();
     }
 
     @SuppressWarnings("finally")

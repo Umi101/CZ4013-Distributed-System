@@ -4,13 +4,15 @@ import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 import java.util.HashMap;
 
+import entity.History;
 import entity.Listeners;
+import entity.History.Client;
 import main.Server;
 import utils.DataUnpacker;
 
 public class UpdateAccountService {
 
-	public void handleService(byte[] data, Server server, InetAddress clientAddress, int clientPortNumber, Listeners listeners, int semantic, HashMap<Integer, String> history) {
+	public void handleService(byte[] data, Server server, InetAddress clientAddress, int clientPortNumber, Listeners listeners, int semantic, History history) {
 		
 
 		HashMap <String, Object> resultsMap = new DataUnpacker.DataPackage()
@@ -56,11 +58,9 @@ public class UpdateAccountService {
 			}
 		}
 		else {
-			if (history.containsKey(messageId)) {
-				System.out.println("Duplicated request filtered. Retransmitting response.");
-				s = history.get(messageId);
-			}
-			else {
+			Client client = history.findClient(clientAddress, clientPortNumber);
+			s = client.filterDuplicates(messageId);
+			if (s == null) {
 				double flag = server.bank.updateAccount(name, password, acc_no, amount);
 				if (flag < 0){
 					if (flag == -1) {s = "Account does not exist. Try again.";}
@@ -72,8 +72,9 @@ public class UpdateAccountService {
 					String currency = server.bank.checkAccountCurrency(name, password, acc_no);
 					s = String.format("Account successfully updated. Your current account balance is: %s%.2f", currency, flag);
 				}
-				history.put(messageId, s);
+				client.addToHistory(messageId, s);
 			}
+
 		}
 		
 		

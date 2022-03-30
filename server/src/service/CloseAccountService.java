@@ -4,13 +4,15 @@ import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 import java.util.HashMap;
 
+import entity.History;
+import entity.History.Client;
 import entity.Listeners;
 import main.Server;
 import utils.DataUnpacker;
 
 public class CloseAccountService {
 
-	public void handleService(byte [] data, Server server, InetAddress clientAddress, int clientPortNumber, Listeners listeners, int semantic, HashMap<Integer, String> history) {
+	public void handleService(byte [] data, Server server, InetAddress clientAddress, int clientPortNumber, Listeners listeners, int semantic, History history) {
 		HashMap <String, Object> resultsMap = new DataUnpacker.DataPackage()
 				.setType("service_id",DataUnpacker.TYPE.TWO_BYTE_INT)
 				.setType("message_id",DataUnpacker.TYPE.INTEGER)			
@@ -46,10 +48,9 @@ public class CloseAccountService {
 			}
 		}
 		else {
-			if (history.containsKey(messageId)) {
-				s = history.get(messageId);
-			}
-			else {
+			Client client = history.findClient(clientAddress, clientPortNumber);
+			s = client.filterDuplicates(messageId);
+			if (s == null) {
 				int flag = server.bank.closeAccount(name, password, acc_no);				
 				if (flag < 0){
 					if (flag == -1) {s = "Account does not exist. Try again.";}
@@ -63,7 +64,7 @@ public class CloseAccountService {
 					s = String.format("Account id %d closed.",acc_no);
 
 				}
-				history.put(messageId, s);
+				client.addToHistory(messageId, s);
 			}
 		}
 		

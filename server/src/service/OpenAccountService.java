@@ -5,13 +5,15 @@ import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
 
+import entity.History;
+import entity.History.Client;
 import entity.Listeners;
 import utils.DataUnpacker;
 import main.Server;
 
 public class OpenAccountService {
 	
-	public void handleService(byte[] data, Server server, InetAddress clientAddress, int clientPortNumber, Listeners listeners, int semantic, HashMap<Integer, String> history) {
+	public void handleService(byte[] data, Server server, InetAddress clientAddress, int clientPortNumber, Listeners listeners, int semantic, History history) {
 		HashMap <String, Object> resultsMap = new DataUnpacker.DataPackage()
 				.setType("service_id",DataUnpacker.TYPE.TWO_BYTE_INT)
 				.setType("message_id",DataUnpacker.TYPE.INTEGER)
@@ -40,7 +42,7 @@ public class OpenAccountService {
 		if (semantic == 1) {
 			int flag = server.bank.openAccount(name, password, currency, balance);
 			if (flag == -1){
-				s = "Create account failed. Try again.";
+				s = "Account already existed. Try again.";
 
 			}
 			else
@@ -50,9 +52,9 @@ public class OpenAccountService {
 			}
 		}
 		else{
-			if (history.containsKey(messageId)) {
-				s = history.get(messageId);
-			}else {
+			Client client = history.findClient(clientAddress, clientPortNumber);
+			s = client.filterDuplicates(messageId);
+			if (s == null) {
 				int flag = server.bank.openAccount(name, password, currency, balance);
 				if (flag == -1){
 					s = "Account already existed. Try again.";
@@ -63,7 +65,7 @@ public class OpenAccountService {
 					s = String.format("New account created. The account id is: %d%n",flag);
 					
 				}
-				history.put(messageId, s);
+				client.addToHistory(messageId, s);
 			}
 		}
 		
