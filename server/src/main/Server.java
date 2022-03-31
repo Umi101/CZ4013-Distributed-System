@@ -31,6 +31,12 @@ public class Server {
     protected int semantic;
     public History history;
 
+    /**
+	 * Class constructor of Server	
+	 * @param socket - socket object used to send and receive messages
+	 * @param semantic - At-Least-Once or At-Most-Once
+	 */
+    
     public Server(Socket socket, int semantic) {
         this.designatedSocket = socket;
         this.buffer = new byte[BUFFERSIZE];
@@ -40,6 +46,9 @@ public class Server {
         this.history = new History();
     }
 
+    /**
+	 * Server starts listening for incoming request once called
+	 */
     @SuppressWarnings("finally")
 	public void start() {
 
@@ -52,6 +61,7 @@ public class Server {
                 if(p.getLength() != 0) {
                     InetAddress clientAddress = p.getAddress();
                     int clientPortNumber = p.getPort();
+                    //Service ID from client is the second byte in the byte array sent from client
     				int serviceRequested = p.getData()[1];
     				
     				
@@ -105,7 +115,12 @@ public class Server {
             }
         }
     }
-
+    
+	/**
+	 * Listen for incoming messages
+	 * @return DatagramPacket with new message
+	 * @throws IOException
+	 */
     public DatagramPacket receive() throws IOException{
         Arrays.fill(buffer, (byte) 0);
         DatagramPacket p = new DatagramPacket(buffer, buffer.length);

@@ -4,7 +4,11 @@ import java.util.Scanner;
 public class Console {
     private Scanner scanner;
     static boolean debug_info = true;
-
+    
+	/**
+	 * Class constructor of Console 
+	 * @param scanner
+	 */
     public Console(Scanner scanner) {
         this.scanner = scanner;
     }
@@ -18,11 +22,20 @@ public class Console {
             System.out.println(str);
     }
 
+	/**
+	 * Prompts the user to enter an integer of choice
+	 * @param question - A string of question to ask user for input
+	 * @return user input
+	 */
     public int askForInteger(String question) {
         System.out.println(question);
         return askForInteger();
     }
 
+	/**
+	 * Scans next input in the console as an integer
+	 * @return Integer if user key in correctly, error message otherwise
+	 */
     public int askForInteger() {
         while (true) {
             try {
@@ -32,11 +45,20 @@ public class Console {
         }
     }
 
+	/**
+	 * Prompts user to input answer through a question
+	 * @param question - question to prompt user with
+	 * @return Double unless input is not a number
+	 */
     public double askForDouble(String question) {
         System.out.println(question);
         return askForDouble();
     }
 
+	/**
+	 * Scans the next input from the user as a double 
+	 * @return Double if user key in correctly, error message otherwise
+	 */
     public double askForDouble() {
         while (true) {
             try {
@@ -46,11 +68,23 @@ public class Console {
         }
     }
 
+	/**
+	 * Scans the next input as a string
+	 * @param question
+	 * @return String
+	 */
     public String askForString(String question) {
         System.out.println(question);
         return scanner.nextLine();
     }
 
+	/**
+	 * Method to get integer input from user, within a specific range of choices
+	 * @param min - smallest option number
+	 * @param max - largest option number
+	 * @param question - Question to user
+	 * @return - input from user
+	 */
     public int askForInteger(int min, int max, String question){
         System.out.println(question);
         int choice = min;
@@ -68,6 +102,13 @@ public class Console {
         }
     }
 
+	/**
+	 * Method to get double input from user, within a specific range of choices
+	 * @param min - smallest option number
+	 * @param max - largest option number
+	 * @param question - Question to user
+	 * @return - double input from user
+	 */
     public double askForDouble(double min, double max, String question){
         System.out.println(question);
         double choice = min;

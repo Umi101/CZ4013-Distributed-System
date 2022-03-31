@@ -15,8 +15,8 @@ def main():
     # port = 2222
     # host = 'localhost'
     console = Console()
-    port = console.prompt_int("Enter server's port number : ")
     host = console.prompt_string('Enter server address : ')
+    port = console.prompt_int("Enter server's port number : ")
     client = Client(port,host)
   
 

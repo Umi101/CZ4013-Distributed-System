@@ -1,4 +1,3 @@
-from utils.marshall import *
 import struct
 
 class DataBuilder():

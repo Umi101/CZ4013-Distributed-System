@@ -12,35 +12,38 @@ public class Application {
     private static Server server;
     private static Socket socket;
     private static InetAddress address;
-
-//    private static final String IP_ADDR = "0.0.0.0";
-    private static final String IP_ADDR = "127.0.0.1";
-    private static final int SERVER_PORT_NO = 2222;
-    private static final int CLIENT_PORT_NO = 2223;
+    private static int portNumber;
+    private static double lossRate;
 
     public static void main(String[] args){
         Console console = new Console(new Scanner(System.in));
         try {
-            address = InetAddress.getByName(IP_ADDR);
-            System.out.printf("Starting server listening to Port %d, IP %s.%n", CLIENT_PORT_NO, IP_ADDR);
+        	System.out.println("Starting server");
+        	
+        	/*-----------------Start of code to set server configurations-----------------------------------*/
+			String addressInput = console.askForString("Input IP address hosting server on:");
+			address = InetAddress.getByName(addressInput);
+			portNumber = console.askForInteger("Input port number for server to listen at:");
             
-            double lossRate;
             
+            /*Specify what type of socket to use*/
             int socketType = console.askForInteger(1,2,"Select socket type : \n1) Normal socket \n2) Packet loss socket");
             if (socketType == 1){
-            	lossRate = 0.0;
+            	lossRate = 0.0; //loss rate is 0 for normal socket
             }
             else{
+            	/*Specify loss rate*/
             	lossRate = console.askForDouble(0.0, 0.99, "Input packet loss rate (min: 0.0 max: 0.99): ");
             }
             
-
+            /*Specify type of invocation semantics*/
             int semantic = console.askForInteger(1,2,"Select invocation semantic (1 At-least-once  2 At-most-once): ");
  
             System.out.printf("Socket type: %s \n",socketType);
-            socket = new Socket(new DatagramSocket(SERVER_PORT_NO, address),socketType,lossRate);
+            socket = new Socket(new DatagramSocket(portNumber, address),socketType,lossRate);
             
             server = new Server(socket, semantic);
+            /*Start server*/
             server.start();
         } catch (SocketException e) {
             e.printStackTrace();
